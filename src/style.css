@@ -1,0 +1,337 @@
+:root {
+  --lacquer: #0b0908;
+  --room: #14110e;
+  --cream: #ede4d0;
+  --aluminum: #a9a297;
+  --amber: #e8a03a;
+  --oxblood: #7a1e28;
+  --cyan: #6aa8b0;
+  --brass: #b08a4a;
+  --brass-deep: #6e5428;
+  --oak: #3c2a1c;
+  --plate: #c4a574;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--room);
+  color: var(--cream);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 70% 55% at 28% 38%, rgba(232, 160, 58, 0.09), transparent 58%),
+    radial-gradient(ellipse 50% 40% at 88% 8%, rgba(176, 138, 74, 0.07), transparent 50%),
+    linear-gradient(180deg, #1a1612 0%, var(--room) 42%, #0c0a08 100%);
+}
+
+body::after {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  opacity: 0.035;
+  background-image: repeating-radial-gradient(
+    circle at 20% 30%,
+    #000 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+#desk {
+  position: relative;
+  min-height: 100dvh;
+}
+
+.mast {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1.4rem 1.5rem 0 1.7rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mast h1 {
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  letter-spacing: -0.03em;
+  color: var(--cream);
+  line-height: 0.9;
+}
+
+.mast p {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--aluminum);
+}
+
+#lathe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.plate {
+  position: absolute;
+  top: 1.6rem;
+  right: 1.4rem;
+  width: min(22rem, 38vw);
+  padding: 1.15rem 1.1rem 1rem;
+  z-index: 3;
+  background:
+    linear-gradient(145deg, #d8be8a 0%, #b08a4a 38%, #8a6a32 72%, #c4a574 100%);
+  color: #1c140c;
+  border-radius: 3px 10px 4px 8px;
+  transform: rotate(-1.4deg);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 236, 200, 0.55),
+    inset 0 -2px 0 rgba(60, 40, 12, 0.25);
+  border: 1px solid #e8d5a8;
+}
+
+.plate-screw {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #d0cbc4, #5a5550);
+  box-shadow: inset 0 0 0 1px #2a2622;
+}
+
+.plate-screw-tl {
+  top: 8px;
+  left: 8px;
+}
+.plate-screw-tr {
+  top: 10px;
+  right: 12px;
+}
+
+.plate-mark {
+  margin: 0 0 0.75rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass-deep);
+}
+
+.plate dl {
+  margin: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.plate dl > div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.4rem;
+  align-items: baseline;
+  border-bottom: 1px solid rgba(60, 42, 12, 0.18);
+  padding-bottom: 0.35rem;
+}
+
+.plate dt {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--brass-deep);
+}
+
+.plate dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 0 rgba(255, 220, 160, 0.28);
+}
+
+.glow-legend {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.45rem;
+  align-items: center;
+  margin: 0.85rem 0 0.7rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  color: var(--brass-deep);
+}
+
+.glow-bar {
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #3a3530, #e8a03a 55%, #f3c56b);
+  box-shadow: inset 0 0 0 1px rgba(28, 20, 12, 0.35);
+}
+
+.groove-key {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.28rem 0.6rem;
+  font-size: 0.68rem;
+}
+
+.groove-key li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 1px;
+  display: inline-block;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.swatch-system {
+  background: #c9bba6;
+}
+.swatch-token {
+  background: #6aa8b0;
+}
+.swatch-compute {
+  background: #e8a03a;
+}
+.swatch-dex {
+  background: #c56a3c;
+}
+.swatch-stake {
+  background: #8a7a58;
+}
+.swatch-other {
+  background: #6e6860;
+}
+.swatch-fail {
+  background: #7a1e28;
+}
+
+.hold {
+  margin-top: 0.95rem;
+  width: 100%;
+  appearance: none;
+  border: 1px solid #2a2218;
+  border-radius: 2px;
+  background: linear-gradient(#3a322c, #1a1510);
+  color: var(--cream);
+  font: 500 0.78rem/1 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.72rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.hold:hover,
+.hold:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.hold-lamp {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #3a3530;
+  box-shadow: inset 0 0 0 1px #0b0908;
+}
+
+.hold.is-held .hold-lamp,
+#desk.is-held .hold-lamp {
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+}
+
+.plate-note,
+.floor-note {
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.plate-note {
+  margin: 0.65rem 0 0;
+  color: var(--brass-deep);
+}
+
+.floor-note {
+  display: none;
+}
+
+#desk.is-cold .floor-note::after {
+  content: ' Wire went cold — last groove stays.';
+  color: var(--oxblood);
+}
+
+@media (max-width: 780px) {
+  #desk {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #lathe {
+    position: relative;
+    inset: auto;
+    height: 58dvh;
+    min-height: 22rem;
+    flex: 0 0 auto;
+  }
+
+  .plate {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    margin: 0 0.9rem 1rem;
+    transform: none;
+  }
+
+  .hold {
+    position: sticky;
+    bottom: 0.6rem;
+  }
+
+  .mast {
+    padding: 1rem 1rem 0;
+  }
+
+  .floor-note {
+    display: block;
+    position: relative;
+    padding: 0 1rem 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate {
+    transform: none;
+  }
+}
