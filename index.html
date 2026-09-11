@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/slotvinyl/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0B0908" />
+    <meta
+      name="description"
+      content="Live Solana mainnet as a vinyl cutting lathe. Groove is txs. Stylus is fee pressure."
+    />
+    <title>slotvinyl — mainnet lacquer</title>
+    <script type="module" crossorigin src="/slotvinyl/assets/index-DrwIgJtF.js"></script>
+    <link rel="stylesheet" crossorigin href="/slotvinyl/assets/index-Tt22n3ra.css">
+  </head>
+  <body>
+    <div id="desk">
+      <header class="mast">
+        <h1>slotvinyl</h1>
+        <p>cutting lathe · solana mainnet</p>
+      </header>
+
+      <canvas id="lathe" aria-label="Lacquer disc advancing with the live slot clock"></canvas>
+
+      <aside class="plate" aria-label="Lathe readout">
+        <div class="plate-screw plate-screw-tl" aria-hidden="true"></div>
+        <div class="plate-screw plate-screw-tr" aria-hidden="true"></div>
+        <p class="plate-mark">RK · LATHE 01 · LACQUER</p>
+        <dl>
+          <div>
+            <dt>SLOT</dt>
+            <dd id="read-slot">—</dd>
+          </div>
+          <div>
+            <dt>SAMPLE</dt>
+            <dd id="read-tps">— tx/s</dd>
+          </div>
+          <div>
+            <dt>STYLUS</dt>
+            <dd id="read-fee">idle</dd>
+          </div>
+          <div>
+            <dt>WIRE</dt>
+            <dd id="read-wire">seeking</dd>
+          </div>
+        </dl>
+        <div class="glow-legend">
+          <span>fee glow</span>
+          <div class="glow-bar" aria-hidden="true"></div>
+          <span>hot</span>
+        </div>
+        <ul class="groove-key">
+          <li><i class="swatch swatch-system"></i>system</li>
+          <li><i class="swatch swatch-token"></i>token</li>
+          <li><i class="swatch swatch-compute"></i>cu budget</li>
+          <li><i class="swatch swatch-dex"></i>dex</li>
+          <li><i class="swatch swatch-stake"></i>stake</li>
+          <li><i class="swatch swatch-other"></i>other</li>
+          <li><i class="swatch swatch-fail"></i>fail / skip</li>
+        </ul>
+        <button type="button" id="hold" class="hold" aria-pressed="false">
+          <span class="hold-lamp" aria-hidden="true"></span>
+          HOLD · lift cutter
+        </button>
+        <p class="plate-note">Space lifts. Drag the platter while held.</p>
+      </aside>
+
+      <p class="floor-note">
+        Public RPC. No keys. Failed txs leave oxblood skips in the groove.
+      </p>
+    </div>
+  </body>
+</html>
