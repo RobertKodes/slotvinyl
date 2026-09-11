@@ -45,7 +45,7 @@ export function createView(discPixels: number): LatheView {
   return {
     disc: createDisc(discPixels),
     chips: [],
-    pitch: Math.max(0.45, discPixels / 900),
+    pitch: Math.max(0.28, discPixels / 1500),
   }
 }
 
@@ -54,7 +54,7 @@ export function stampView(view: LatheView, slot: number): void {
 }
 
 export function syncViewSize(view: LatheView, discPixels: number): void {
-  view.pitch = Math.max(0.45, discPixels / 900)
+  view.pitch = Math.max(0.28, discPixels / 1500)
   resizeDisc(view.disc, discPixels)
 }
 
@@ -73,6 +73,7 @@ export function cutOne(
   family: Family,
   failed: boolean,
   slot: number,
+  blank = false,
 ): void {
   const disc = view.disc
   if (disc.cutRadius <= disc.innerR) {
@@ -81,13 +82,14 @@ export function cutOne(
   const localTheta = layout.stylusAngle - platterAngle
   addGroove(disc, {
     theta: localTheta,
-    span: failed ? 0.14 : 0.055 + Math.random() * 0.04,
+    span: failed ? 0.22 : blank ? 0.12 : 0.16 + Math.random() * 0.06,
     radius: disc.cutRadius,
     family,
     failed,
+    blank,
   })
-  disc.cutRadius -= view.pitch * (failed ? 1.6 : 1)
-  spawnChips(view, layout)
+  disc.cutRadius -= view.pitch * (failed ? 1.4 : blank ? 0.85 : 1)
+  if (!blank) spawnChips(view, layout)
 }
 
 function spawnChips(view: LatheView, layout: Layout): void {
@@ -253,58 +255,73 @@ function drawCarriage(
   live: boolean,
 ): void {
   const { cx, cy, discR, stylusAngle } = layout
-  const outer = discR + 28
-  const ox = cx + Math.cos(stylusAngle) * outer
-  const oy = cy + Math.sin(stylusAngle) * outer
-  const lift = held ? -16 : 0
-  const sx = cx + Math.cos(stylusAngle) * cutCss
-  const sy = cy + Math.sin(stylusAngle) * cutCss + lift
-  const hx = ox + Math.cos(stylusAngle) * 54
-  const hy = oy + Math.sin(stylusAngle) * 54 + lift * 0.3
+  const a = stylusAngle
+  const lift = held ? -18 : 0
+  const rim = discR + 10
+  const way0 = discR + 18
+  const way1 = discR + 78
+  const at = (r: number, dy = 0) => ({
+    x: cx + Math.cos(a) * r,
+    y: cy + Math.sin(a) * r + dy,
+  })
 
-  ctx.strokeStyle = '#6A645C'
-  ctx.lineWidth = 7
+  ctx.strokeStyle = '#5A5550'
+  ctx.lineWidth = 11
+  ctx.lineCap = 'butt'
+  ctx.beginPath()
+  ctx.moveTo(at(way0).x, at(way0).y)
+  ctx.lineTo(at(way1).x, at(way1).y)
+  ctx.stroke()
+  ctx.strokeStyle = '#C9C2B8'
+  ctx.lineWidth = 3
+  ctx.beginPath()
+  ctx.moveTo(at(way0, lift * 0.15).x, at(way0, lift * 0.15).y)
+  ctx.lineTo(at(way1, lift * 0.25).x, at(way1, lift * 0.25).y)
+  ctx.stroke()
+
+  // Carriage rod only over already-cut lacquer — never through the label.
+  const inner = Math.max(cutCss, discR * 0.32)
+  ctx.strokeStyle = held ? '#8A847C' : '#9A948C'
+  ctx.lineWidth = 3.2
   ctx.lineCap = 'round'
   ctx.beginPath()
-  ctx.moveTo(cx + Math.cos(stylusAngle) * (discR * 0.2), cy + Math.sin(stylusAngle) * (discR * 0.2))
-  ctx.lineTo(hx, hy)
-  ctx.stroke()
-  ctx.strokeStyle = '#C4BDB4'
-  ctx.lineWidth = 2.2
-  ctx.beginPath()
-  ctx.moveTo(ox, oy + lift * 0.2)
-  ctx.lineTo(hx, hy)
+  ctx.moveTo(at(inner, lift).x, at(inner, lift).y)
+  ctx.lineTo(at(rim, lift * 0.4).x, at(rim, lift * 0.4).y)
   ctx.stroke()
 
-  // Headstock block
+  const sx = at(cutCss, lift).x
+  const sy = at(cutCss, lift).y
   ctx.save()
   ctx.translate(sx, sy)
-  ctx.rotate(stylusAngle)
-  rounded(ctx, -10, -9, 28, 18, 3)
-  const head = ctx.createLinearGradient(-10, -9, 18, 9)
-  head.addColorStop(0, '#D0CBC4')
-  head.addColorStop(1, '#6E6860')
+  ctx.rotate(a)
+  rounded(ctx, -6, -11, 22, 22, 3)
+  const head = ctx.createLinearGradient(-6, -11, 16, 11)
+  head.addColorStop(0, '#E0DBD4')
+  head.addColorStop(1, '#5A5550')
   ctx.fillStyle = head
   ctx.fill()
   ctx.strokeStyle = '#2E2A26'
   ctx.lineWidth = 0.8
   ctx.stroke()
 
-  const glow = held ? 0.12 : 0.25 + feeNorm * 0.75
-  const rad = 6 + feeNorm * 16
+  const glow = held ? 0.18 : 0.4 + feeNorm * 0.6
+  const rad = 10 + feeNorm * 18
   ctx.globalCompositeOperation = 'lighter'
-  const blaze = ctx.createRadialGradient(18, 0, 0, 18, 0, rad)
+  const blaze = ctx.createRadialGradient(12, 0, 0, 12, 0, rad)
   blaze.addColorStop(0, `rgba(243,197,107,${0.95 * glow})`)
-  blaze.addColorStop(0.35, `rgba(232,160,58,${0.55 * glow})`)
+  blaze.addColorStop(0.4, `rgba(232,160,58,${0.5 * glow})`)
   blaze.addColorStop(1, 'rgba(232,160,58,0)')
   ctx.fillStyle = blaze
   ctx.beginPath()
-  ctx.arc(18, 0, rad, 0, Math.PI * 2)
+  ctx.arc(12, 0, rad, 0, Math.PI * 2)
   ctx.fill()
   ctx.globalCompositeOperation = 'source-over'
-  ctx.fillStyle = held ? '#8A7A58' : live ? ink.amberHot : ink.aluminum
+  ctx.fillStyle = held ? '#8A7A58' : live ? ink.amberHot : ink.amber
   ctx.beginPath()
-  ctx.arc(18, 0, 2.4, 0, Math.PI * 2)
+  ctx.moveTo(20, 0)
+  ctx.lineTo(10, -4)
+  ctx.lineTo(10, 4)
+  ctx.closePath()
   ctx.fill()
   ctx.restore()
 
@@ -312,7 +329,7 @@ function drawCarriage(
     ctx.font = '11px "IBM Plex Mono", monospace'
     ctx.fillStyle = ink.creamDim
     ctx.textAlign = 'left'
-    ctx.fillText('CUTTER UP', hx - 12, hy - 16)
+    ctx.fillText('CUTTER UP', at(way1).x - 8, at(way1, lift * 0.25).y - 14)
   }
 }
 

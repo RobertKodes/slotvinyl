@@ -1,10 +1,7 @@
 const DEFAULTS = [
-  'https://solana-mainnet.publicnode.com',
   'https://solana-rpc.publicnode.com',
+  'https://solana.publicnode.com',
   'https://api.mainnet-beta.solana.com',
-  'https://solana.drpc.org',
-  'https://rpc.ankr.com/solana',
-  'https://solana.llamarpc.com',
 ]
 
 export function rpcEndpoints(): string[] {
@@ -168,6 +165,15 @@ export function medianFee(fees: PrioFee[]): number | null {
   if (a == null) return null
   if (vals.length % 2 === 0 && b != null) return (a + b) / 2
   return a
+}
+
+/** Quiet medians sit at 0; use the hot tail so the stylus can still read congestion. */
+export function pressureFee(fees: PrioFee[]): number | null {
+  if (!fees.length) return null
+  const med = medianFee(fees)
+  if (med && med > 0) return med
+  const vals = fees.map((f) => f.prioritizationFee).sort((a, b) => a - b)
+  return vals[Math.min(vals.length - 1, Math.floor(vals.length * 0.9))] ?? med
 }
 
 /** Log-ish 0..1 from micro-lamports per CU. Quiet chain sits low; congestion saturates. */

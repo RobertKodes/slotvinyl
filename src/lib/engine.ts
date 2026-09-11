@@ -2,7 +2,7 @@ import type { Family } from './palette.ts'
 import { laneAt } from './programs.ts'
 import {
   feeNorm,
-  medianFee,
+  pressureFee,
   RpcPool,
   rpcEndpoints,
   sampleTps,
@@ -68,9 +68,10 @@ export function displayedSlot(eng: Engine, now: number): number {
 }
 
 export function syncPlatter(eng: Engine, now: number): void {
-  if (eng.held || eng.reduced) return
+  if (eng.held) return
   const slot = displayedSlot(eng, now)
-  eng.platter = (slot / SLOTS_PER_REV) * Math.PI * 2
+  const turns = (slot / SLOTS_PER_REV) * Math.PI * 2
+  eng.platter = eng.reduced ? turns * 0.08 : turns
 }
 
 const seen = new Set<string>()
@@ -123,7 +124,7 @@ export async function pollMeter(eng: Engine, signal: AbortSignal): Promise<void>
       eng.tps = t.tps
       eng.slotMs = Math.min(800, Math.max(280, t.slotMs))
     }
-    const med = medianFee(fees)
+    const med = pressureFee(fees)
     if (med != null) {
       eng.feeMicro = med
       eng.fee = feeNorm(med)

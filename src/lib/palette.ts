@@ -22,12 +22,12 @@ export const ink = {
 export type Family = 'system' | 'token' | 'compute' | 'dex' | 'stake' | 'other'
 
 export const familyColor: Record<Family, string> = {
-  system: ink.creamDim,
-  token: ink.cyan,
-  compute: ink.amber,
-  dex: ink.copper,
-  stake: '#8A7A58',
-  other: ink.aluminumDark,
+    system: '#D8CCB6',
+    token: '#7EC4CC',
+    compute: '#F0B24A',
+    dex: '#D47848',
+    stake: '#A09068',
+    other: '#8A847C',
 }
 
 export const familyLabel: Record<Family, string> = {

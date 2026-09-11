@@ -6,6 +6,7 @@ export type Groove = {
   radius: number
   family: Family
   failed: boolean
+  blank: boolean
 }
 
 export type DiscModel = {
@@ -82,6 +83,10 @@ export function resetSide(disc: DiscModel, slot: number): void {
 export function addGroove(disc: DiscModel, groove: Groove): void {
   disc.grooves.push(groove)
   if (disc.grooves.length > MAX_GROOVES) disc.grooves.splice(0, disc.grooves.length - MAX_GROOVES)
+  if (disc.grooves.length > 0 && disc.grooves.length % 90 === 0) {
+    paintDisc(disc)
+    return
+  }
   strokeGroove(disc, groove)
 }
 
@@ -144,9 +149,25 @@ function strokeGroove(disc: DiscModel, g: Groove): void {
   const a0 = g.theta - g.span * 0.5
   const a1 = g.theta + g.span * 0.5
   ctx.save()
+  if (g.blank && !g.failed) {
+    ctx.strokeStyle = 'rgba(18,12,8,0.7)'
+    ctx.globalAlpha = 1
+    ctx.lineWidth = 2.4
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    ctx.arc(cx, cy, g.radius, a0, a1)
+    ctx.stroke()
+    ctx.strokeStyle = 'rgba(232,210,170,0.28)'
+    ctx.lineWidth = 1.1
+    ctx.beginPath()
+    ctx.arc(cx, cy, g.radius + 0.9, a0, a1)
+    ctx.stroke()
+    ctx.restore()
+    return
+  }
   ctx.strokeStyle = familyColor[g.family]
-  ctx.globalAlpha = g.failed ? 0.95 : 0.72
-  ctx.lineWidth = g.failed ? 2.4 : 1.35
+  ctx.globalAlpha = g.failed ? 0.95 : 0.92
+  ctx.lineWidth = g.failed ? 3.1 : 2.35
   ctx.lineCap = 'round'
   ctx.beginPath()
   if (g.failed) {

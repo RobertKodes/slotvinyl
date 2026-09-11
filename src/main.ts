@@ -158,21 +158,49 @@ void loopSlot()
 void loopMeter()
 void loopCuts()
 
-let lastCut = 0
 let lastPaint = performance.now()
 let lastHud = 0
+let lastCutAngle = 0
+let angleSeeded = false
+
+function wrapDelta(a: number, b: number): number {
+  let d = a - b
+  while (d > Math.PI) d -= Math.PI * 2
+  while (d < -Math.PI) d += Math.PI * 2
+  return d
+}
 
 function frame(now: number): void {
   const dt = Math.min(0.05, (now - lastPaint) / 1000)
   lastPaint = now
   syncPlatter(eng, now)
   stampView(view, eng.slot)
-  if (!eng.held && now - lastCut > 32) {
-    const job = takeCut(eng)
-    if (job) {
-      cutOne(view, layout, eng.platter, job.family, job.failed, job.slot || eng.slot)
-      lastCut = now
+  if (!angleSeeded && eng.slot) {
+    lastCutAngle = eng.platter
+    angleSeeded = true
+  }
+  if (!eng.held) {
+    const step = 0.09
+    let moved = wrapDelta(eng.platter, lastCutAngle)
+    if (moved < 0) moved = -moved
+    let guard = 0
+    while (moved > step && guard < 12) {
+      const job = takeCut(eng)
+      cutOne(
+        view,
+        layout,
+        lastCutAngle,
+        job?.family ?? 'other',
+        job?.failed ?? false,
+        job?.slot || eng.slot,
+        !job,
+      )
+      lastCutAngle += step
+      moved -= step
+      guard += 1
     }
+  } else {
+    lastCutAngle = eng.platter
   }
   stepChips(view, dt, eng.reduced)
   drawFrame(ctx, layout, view, eng.platter, eng.held, eng.fee, eng.reduced, eng.live)

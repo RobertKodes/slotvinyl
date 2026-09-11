@@ -60,14 +60,11 @@ must pass. GitHub Actions builds and publishes `dist/` to the `gh-pages` branch 
 
 If Pages 404s after merge: GitHub repo Settings → Pages → source **`gh-pages` / root**. The workflow runs on `master` (and `workflow_dispatch`), so the live URL appears after merge, not on the PR branch.
 
-Public RPC, rotating on failure:
+Public RPC, rotating on failure (no keys):
 
-- `solana-mainnet.publicnode.com`
 - `solana-rpc.publicnode.com`
-- `api.mainnet-beta.solana.com`
-- `solana.drpc.org`
-- `rpc.ankr.com/solana`
-- `solana.llamarpc.com`
+- `solana.publicnode.com`
+- `api.mainnet-beta.solana.com` (fallback; some networks 403)
 
 Override with `VITE_RPC_URL`. Methods: `getSlot`, `getRecentPerformanceSamples`, `getRecentPrioritizationFees`, a slow rotate of `getSignaturesForAddress` across program lanes, and an occasional `getBlock` with `transactionDetails: "signatures"` for density. If a method 4xxs we stop asking.
 
